@@ -3,12 +3,8 @@
 * Just copy and paste into your database client
 */
 
-DROP DATABASE IF EXISTS fyyur;
-
-CREATE DATABASE fyyur;
-
 CREATE TABLE venues (
-    venue_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    venue_id SERIAL PRIMARY KEY,
     venue_name VARCHAR,
     --genres VARCHAR,
     venue_city VARCHAR,
@@ -38,16 +34,16 @@ INSERT INTO venues (
     facebook_url,
     website,
     seeking_talent,
-    seeking_description,
+    seeking_description
     --past_shows,
     --upcoming_shows,
-    past_shows_count,
-    upcoming_shows_count
+    --past_shows_count,
+    --upcoming_shows_count
     )
 
 VALUES (
     'The Musical Hop',
-    --'genres',
+    --["Jazz", "Reggae", "Swing", "Classical", "Folk"],
     'San Francisco',
     'CA',
     '1015 Folsom Street',
@@ -56,11 +52,7 @@ VALUES (
     'https://www.facebook.com/TheMusicalHop',
     'https://www.themusicalhop.com',
     TRUE,
-    'We are on the lookout for a local artist to play every two weeks. Please call us.',
-    --'past shows',
-    --'upcoming shows',
-    5,
-    10
+    'We are on the lookout for a local artist to play every two weeks. Please call us.'
     );
 
 INSERT INTO venues (
@@ -74,16 +66,16 @@ INSERT INTO venues (
     facebook_url,
     website,
     seeking_talent,
-    seeking_description,
+    seeking_description
     --past_shows,
     --upcoming_shows,
-    past_shows_count,
-    upcoming_shows_count
+    --past_shows_count,
+    --upcoming_shows_count
     )
 
 VALUES (
     'The Dueling Pianos Bar',
-    --'genres',
+    --["Classical", "R&B", "Hip-Hop"],
     'New York',
     'NY',
     '335 Delancey Street',
@@ -92,11 +84,7 @@ VALUES (
     'https://www.facebook.com/theduelingpianos',
     'https://www.theduelingpianos.com',
     FALSE,
-    NULL,
-    'past shows',
-    'upcoming shows',
-    15,
-    20
+    'n/a'
     );
 
 INSERT INTO venues (
@@ -110,16 +98,16 @@ INSERT INTO venues (
     facebook_url,
     website,
     seeking_talent,
-    seeking_description,
+    seeking_description
     --past_shows,
     --upcoming_shows,
-    past_shows_count,
-    upcoming_shows_count
+    --past_shows_count,
+    --upcoming_shows_count
     )
 
 VALUES (
     'Park Square Live Music & Coffee',
-    --'genres',
+    --["Rock n Roll", "Jazz", "Classical", "Folk"],
     'San Francisco',
     'CA',
     '34 Whiskey Moore Ave',
@@ -128,11 +116,7 @@ VALUES (
     'https://www.facebook.com/ParkSquareLiveMusicAndCoffee',
     'https://www.parksquarelivemusicandcoffee.com',
     FALSE,
-    NULL,
-    --'past shows',
-    --'upcoming shows',
-    25,
-    30
+    'n/a'
     );
 
 -- INSERT INTO venues (
@@ -171,21 +155,21 @@ VALUES (
 --     );
 
 CREATE TABLE artists (
-    artist_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    artist_id SERIAL PRIMARY KEY,
     artist_name VARCHAR,
     --genres VARCHAR,
     artist_city VARCHAR,
     artist_state VARCHAR,
     artist_phone VARCHAR,
     image_link VARCHAR,
-    facebook_link VARCHAR,
+    facebook_url VARCHAR,
     website VARCHAR,
-    seeking_venue BOOLEAN TRUE,
-    seeking_description VARCHAR,
-    --past_shows INT,
-    --upcoming_shows INT,
-    past_shows_count INT,
-    upcoming_shows_count INT
+    seeking_venue BOOLEAN,
+    seeking_description VARCHAR
+    --past_shows,
+    --upcoming_shows,
+    --past_shows_count,
+    --upcoming_shows_count
 );
 
 INSERT INTO artists (
@@ -198,11 +182,11 @@ INSERT INTO artists (
     facebook_url,
     website,
     seeking_venue,
-    seeking_description,
+    seeking_description
     --past_shows
     --upcoming_shows
-    past_shows_count,
-    upcoming_shows_count
+    --past_shows_count,
+    --upcoming_shows_count
     )
 VALUES (
     'Guns N Petals',
@@ -214,11 +198,7 @@ VALUES (
     'https://www.facebook.com/GunsNPetals',
     'https://www.gunsnpetalsband.com',
     TRUE,
-    'Looking for shows to perform at in the San Francisco Bay Area!',
-    --'past shows'
-    --'upcoming shows',
-    0,
-    0
+    'Looking for shows to perform at in the San Francisco Bay Area!'
 );
 
 INSERT INTO artists (
@@ -231,11 +211,7 @@ INSERT INTO artists (
     facebook_url,
     website,
     seeking_venue,
-    seeking_description,
-    --past_shows
-    --upcoming_shows
-    past_shows_count,
-    upcoming_shows_count
+    seeking_description
 )
 VALUES (
     'Matt Quevedo',
@@ -245,13 +221,9 @@ VALUES (
     '300-400-5000',
     'https://images.unsplash.com/photo-1495223153807-b916f75de8c5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80',
     'https://www.facebook.com/mattquevedo923251523',
-    NULL,
+    'n/a',
     FALSE,
-    NULL,
-    --'past shows',
-    --'upcoming shows',
-    25,
-    20
+    'n/a'
 );
 
 INSERT INTO artists (
@@ -264,11 +236,11 @@ INSERT INTO artists (
     facebook_url,
     website,
     seeking_venue,
-    seeking_description,
+    seeking_description
     --past_shows
     --upcoming_shows
-    past_shows_count,
-    upcoming_shows_count
+    --past_shows_count,
+    --upcoming_shows_count
 )
 VALUES (
     'The Wild Sax Band',
@@ -277,14 +249,10 @@ VALUES (
     'CA',
     '432-325-5432',
     'https://images.unsplash.com/photo-1558369981-f9ca78462e61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=794&q=80',
-    NULL,
-    NULL,
+    'n/a',
+    'n/a',
     FALSE,
-    NULL,
-    --'past shows',
-    --'upcoming shows',
-    15,
-    10
+    'n/a'
 
 );
 
@@ -301,8 +269,8 @@ VALUES (
 --     seeking_description,
 --     --past_shows
 --     --upcoming_shows
---     past_shows_count,
---     upcoming_shows_count
+--     --past_shows_count,
+--     --upcoming_shows_count
 -- )
 -- VALUES (
 --     '',
@@ -314,9 +282,27 @@ VALUES (
 --     '',
 --     '',
 --     '',
---     '',
---     '',
---     '',
---     '',
---     ''
+--     ''   
 -- );
+
+CREATE TABLE shows (
+    show_id SERIAL PRIMARY KEY,
+    artist_id INT REFERENCES artists(artist_id), 
+    venue_id INT REFERENCES venues(venue_id),
+    start_time TIMESTAMP
+);
+
+INSERT INTO shows ( artist_id, venue_id, start_time ) 
+VALUES ( 1, 1, '2019-05-21T21:30:00.000Z' );
+
+INSERT INTO shows ( artist_id, venue_id, start_time ) 
+VALUES ( 2, 3, '2019-06-15T23:00:00.000Z');
+
+INSERT INTO shows ( artist_id, venue_id, start_time ) 
+VALUES ( 2, 3, '2035-04-01T20:00:00.000Z');
+
+INSERT INTO shows ( artist_id, venue_id, start_time ) 
+VALUES ( 2, 3, '2035-04-08T20:00:00.000Z');
+
+INSERT INTO shows ( artist_id, venue_id, start_time ) 
+VALUES ( 2, 3, '2035-04-15T20:00:00.000Z');
