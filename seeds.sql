@@ -3,47 +3,38 @@
 * Just copy and paste into your database client
 */
 
-CREATE TABLE venues (
-    venue_id SERIAL PRIMARY KEY,
+CREATE TABLE Venue (
+    id SERIAL PRIMARY KEY,
     venue_name VARCHAR,
-    --genres VARCHAR,
     venue_city VARCHAR,
     venue_state VARCHAR,
     venue_address VARCHAR,
     venue_phone VARCHAR,
-    image_link VARCHAR,
+    image_url VARCHAR,
     facebook_url VARCHAR,
     website VARCHAR,
     seeking_talent BOOLEAN,
     seeking_description VARCHAR,
-    --past_shows INT,
-    --upcoming_shows INT,
     past_shows_count INT,
     upcoming_shows_count INT
 
 );
 
-INSERT INTO venues (
+INSERT INTO Venue (
     venue_name,
-    --genres,
     venue_city,
     venue_state,
     venue_address,
     venue_phone,
-    image_link,
+    image_url,
     facebook_url,
     website,
     seeking_talent,
     seeking_description
-    --past_shows,
-    --upcoming_shows,
-    --past_shows_count,
-    --upcoming_shows_count
     )
 
 VALUES (
     'The Musical Hop',
-    --["Jazz", "Reggae", "Swing", "Classical", "Folk"],
     'San Francisco',
     'CA',
     '1015 Folsom Street',
@@ -55,27 +46,21 @@ VALUES (
     'We are on the lookout for a local artist to play every two weeks. Please call us.'
     );
 
-INSERT INTO venues (
+INSERT INTO Venue (
     venue_name,
-    --genres,
     venue_city,
     venue_state,
     venue_address,
     venue_phone,
-    image_link,
+    image_url,
     facebook_url,
     website,
     seeking_talent,
     seeking_description
-    --past_shows,
-    --upcoming_shows,
-    --past_shows_count,
-    --upcoming_shows_count
     )
 
 VALUES (
     'The Dueling Pianos Bar',
-    --["Classical", "R&B", "Hip-Hop"],
     'New York',
     'NY',
     '335 Delancey Street',
@@ -87,27 +72,21 @@ VALUES (
     'n/a'
     );
 
-INSERT INTO venues (
+INSERT INTO Venue (
     venue_name,
-    --genres,
     venue_city,
     venue_state,
     venue_address,
     venue_phone,
-    image_link,
+    image_url,
     facebook_url,
     website,
     seeking_talent,
     seeking_description
-    --past_shows,
-    --upcoming_shows,
-    --past_shows_count,
-    --upcoming_shows_count
     )
 
 VALUES (
     'Park Square Live Music & Coffee',
-    --["Rock n Roll", "Jazz", "Classical", "Folk"],
     'San Francisco',
     'CA',
     '34 Whiskey Moore Ave',
@@ -119,78 +98,32 @@ VALUES (
     'n/a'
     );
 
--- INSERT INTO venues (
---     venue_name,
---     --genres,
---     venue_city,
---     venue_state,
---     venue_address,
---     venue_phone,
---     image_link,
---     facebook_url,
---     website,
---     seeking_talent,
---     seeking_description,
---     --past_shows,
---     --upcoming_shows,
---     past_shows_count,
---     upcoming_shows_count
--- )
--- VALUES (
---     '',
---     '',
---     '',
---     '',
---     '',
---     '',
---     '',
---     '',
---     '',
---     '',
---     '',
---     '',
---     '',
---     '',
---     ''
---     );
-
-CREATE TABLE artists (
-    artist_id SERIAL PRIMARY KEY,
+CREATE TABLE Artist (
+    id SERIAL PRIMARY KEY,
     artist_name VARCHAR,
-    --genres VARCHAR,
     artist_city VARCHAR,
     artist_state VARCHAR,
     artist_phone VARCHAR,
-    image_link VARCHAR,
+    image_url VARCHAR,
     facebook_url VARCHAR,
     website VARCHAR,
     seeking_venue BOOLEAN,
     seeking_description VARCHAR
-    --past_shows,
-    --upcoming_shows,
-    --past_shows_count,
-    --upcoming_shows_count
 );
 
-INSERT INTO artists (
+INSERT INTO Artist (
     artist_name,
-    --genres
     artist_city,
     artist_state,
     artist_phone,
-    image_link,
+    image_url,
     facebook_url,
     website,
     seeking_venue,
     seeking_description
-    --past_shows
-    --upcoming_shows
-    --past_shows_count,
-    --upcoming_shows_count
     )
 VALUES (
     'Guns N Petals',
-    --['Rock n Roll'],
     'San Francisco',
     'CA',
     '326-123-5000',
@@ -201,13 +134,12 @@ VALUES (
     'Looking for shows to perform at in the San Francisco Bay Area!'
 );
 
-INSERT INTO artists (
+INSERT INTO Artist (
     artist_name,
-    --genres
     artist_city,
     artist_state,
     artist_phone,
-    image_link,
+    image_url,
     facebook_url,
     website,
     seeking_venue,
@@ -215,7 +147,6 @@ INSERT INTO artists (
 )
 VALUES (
     'Matt Quevedo',
-    --['Jazz'],
     'New York',
     'NY',
     '300-400-5000',
@@ -226,25 +157,19 @@ VALUES (
     'n/a'
 );
 
-INSERT INTO artists (
+INSERT INTO Artist (
     artist_name,
-    --genres
     artist_city,
     artist_state,
     artist_phone,
-    image_link,
+    image_url,
     facebook_url,
     website,
     seeking_venue,
     seeking_description
-    --past_shows
-    --upcoming_shows
-    --past_shows_count,
-    --upcoming_shows_count
 )
 VALUES (
     'The Wild Sax Band',
-    --['Jazz', 'Classical'],
     'San Francisco',
     'CA',
     '432-325-5432',
@@ -256,53 +181,84 @@ VALUES (
 
 );
 
--- INSERT INTO artists (
---     artist_name,
---     --genres
---     artist_city,
---     artist_state,
---     artist_phone,
---     image_link,
---     facebook_url,
---     website,
---     seeking_venue,
---     seeking_description,
---     --past_shows
---     --upcoming_shows
---     --past_shows_count,
---     --upcoming_shows_count
--- )
--- VALUES (
---     '',
---     '',
---     '',
---     '',
---     '',
---     '',
---     '',
---     '',
---     '',
---     ''   
--- );
-
-CREATE TABLE shows (
-    show_id SERIAL PRIMARY KEY,
-    artist_id INT REFERENCES artists(artist_id), 
-    venue_id INT REFERENCES venues(venue_id),
+CREATE TABLE show (
+    id SERIAL PRIMARY KEY,
+    artist_id INT REFERENCES Artist(id), 
+    venue_id INT REFERENCES Venue(id),
     start_time TIMESTAMP
 );
 
-INSERT INTO shows ( artist_id, venue_id, start_time ) 
+INSERT INTO show ( artist_id, venue_id, start_time ) 
 VALUES ( 1, 1, '2019-05-21T21:30:00.000Z' );
 
-INSERT INTO shows ( artist_id, venue_id, start_time ) 
+INSERT INTO show ( artist_id, venue_id, start_time ) 
 VALUES ( 2, 3, '2019-06-15T23:00:00.000Z');
 
-INSERT INTO shows ( artist_id, venue_id, start_time ) 
+INSERT INTO show ( artist_id, venue_id, start_time ) 
 VALUES ( 2, 3, '2035-04-01T20:00:00.000Z');
 
-INSERT INTO shows ( artist_id, venue_id, start_time ) 
+INSERT INTO show ( artist_id, venue_id, start_time ) 
 VALUES ( 2, 3, '2035-04-08T20:00:00.000Z');
 
-INSERT INTO shows ( artist_id, venue_id, start_time ) 
+INSERT INTO show ( artist_id, venue_id, start_time ) 
 VALUES ( 2, 3, '2035-04-15T20:00:00.000Z');
+
+CREATE TABLE artist_genre (
+    id SERIAL PRIMARY KEY,
+    artist_id INT REFERENCES Artist(id), 
+    genre VARCHAR
+);
+
+INSERT INTO artist_genre (artist_id, genre)
+VALUES(1, 'Rock n Roll');
+
+INSERT INTO artist_genre (artist_id, genre)
+VALUES(2, 'Jazz');
+
+INSERT INTO artist_genre (artist_id, genre)
+VALUES(3, 'Jazz');
+
+INSERT INTO artist_genre (artist_id, genre)
+VALUES(3, 'Classical');
+
+CREATE TABLE venue_genre (
+    id SERIAL PRIMARY KEY,
+    venue_id INT REFERENCES Venue(id), 
+    genre VARCHAR
+);
+
+INSERT INTO venue_genre (venue_id, genre)
+VALUES(1, 'Jazz');
+
+INSERT INTO venue_genre (venue_id, genre)
+VALUES(1, 'Reggae');
+
+INSERT INTO venue_genre (venue_id, genre)
+VALUES(1, 'Swing');
+
+INSERT INTO venue_genre (venue_id, genre)
+VALUES(1, 'Classical');
+
+INSERT INTO venue_genre (venue_id, genre)
+VALUES(1, 'Folk');
+
+INSERT INTO venue_genre (venue_id, genre)
+VALUES(2, 'Classical');
+
+INSERT INTO venue_genre (venue_id, genre)
+VALUES(2, 'R&B');
+
+INSERT INTO venue_genre (venue_id, genre)
+VALUES(2, 'Hip-Hop');
+
+INSERT INTO venue_genre (venue_id, genre)
+VALUES(3, 'Rock n Roll');
+
+INSERT INTO venue_genre (venue_id, genre)
+VALUES(3, 'Jazz');
+
+INSERT INTO venue_genre (venue_id, genre)
+VALUES(3, 'Classical');
+
+INSERT INTO venue_genre (venue_id, genre)
+VALUES(3, 'Folk');
