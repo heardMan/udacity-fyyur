@@ -15,9 +15,6 @@ CREATE TABLE venues (
     website VARCHAR,
     seeking_talent BOOLEAN,
     seeking_description VARCHAR,
-    past_shows_count INT,
-    upcoming_shows_count INT
-
 );
 
 INSERT INTO venues (
