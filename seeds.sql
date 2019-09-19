@@ -3,26 +3,26 @@
 * Just copy and paste into your database client
 */
 
-CREATE TABLE venues (
-    id SERIAL PRIMARY KEY,
-    venue_name VARCHAR,
-    venue_city VARCHAR,
-    venue_state VARCHAR,
-    venue_address VARCHAR,
-    venue_phone VARCHAR,
-    image_url VARCHAR,
-    facebook_url VARCHAR,
-    website VARCHAR,
-    seeking_talent BOOLEAN,
-    seeking_description VARCHAR,
-);
+-- CREATE TABLE "Venue" (
+--     id SERIAL PRIMARY KEY,
+--     name VARCHAR,
+--     city VARCHAR,
+--     state VARCHAR,
+--     address VARCHAR,
+--     phone VARCHAR,
+--     image_url VARCHAR,
+--     facebook_url VARCHAR,
+--     website VARCHAR,
+--     seeking_talent BOOLEAN,
+--     seeking_description VARCHAR,
+-- );
 
-INSERT INTO venues (
-    venue_name,
-    venue_city,
-    venue_state,
-    venue_address,
-    venue_phone,
+INSERT INTO "Venue" (
+    name,
+    city,
+    state,
+    address,
+    phone,
     image_url,
     facebook_url,
     website,
@@ -43,12 +43,12 @@ VALUES (
     'We are on the lookout for a local artist to play every two weeks. Please call us.'
     );
 
-INSERT INTO venues (
-    venue_name,
-    venue_city,
-    venue_state,
-    venue_address,
-    venue_phone,
+INSERT INTO "Venue" (
+    name,
+    city,
+    state,
+    address,
+    phone,
     image_url,
     facebook_url,
     website,
@@ -69,12 +69,12 @@ VALUES (
     'n/a'
     );
 
-INSERT INTO venues (
-    venue_name,
-    venue_city,
-    venue_state,
-    venue_address,
-    venue_phone,
+INSERT INTO "Venue" (
+    name,
+    city,
+    state,
+    address,
+    phone,
     image_url,
     facebook_url,
     website,
@@ -95,24 +95,24 @@ VALUES (
     'n/a'
     );
 
-CREATE TABLE artists (
-    id SERIAL PRIMARY KEY,
-    artist_name VARCHAR,
-    artist_city VARCHAR,
-    artist_state VARCHAR,
-    artist_phone VARCHAR,
-    image_url VARCHAR,
-    facebook_url VARCHAR,
-    website VARCHAR,
-    seeking_venue BOOLEAN,
-    seeking_description VARCHAR
-);
+-- CREATE TABLE "Artist" (
+--     id SERIAL PRIMARY KEY,
+--     name VARCHAR,
+--     city VARCHAR,
+--     state VARCHAR,
+--     phone VARCHAR,
+--     image_url VARCHAR,
+--     facebook_url VARCHAR,
+--     website VARCHAR,
+--     seeking_venue BOOLEAN,
+--     seeking_description VARCHAR
+-- );
 
-INSERT INTO artists (
-    artist_name,
-    artist_city,
-    artist_state,
-    artist_phone,
+INSERT INTO "Artist" (
+    name,
+    city,
+    state,
+    phone,
     image_url,
     facebook_url,
     website,
@@ -131,17 +131,17 @@ VALUES (
     'Looking for shows to perform at in the San Francisco Bay Area!'
 );
 
-INSERT INTO artists (
-    artist_name,
-    artist_city,
-    artist_state,
-    artist_phone,
+INSERT INTO "Artist" (
+    name,
+    city,
+    state,
+    phone,
     image_url,
     facebook_url,
     website,
     seeking_venue,
     seeking_description
-)
+    )
 VALUES (
     'Matt Quevedo',
     'New York',
@@ -154,17 +154,17 @@ VALUES (
     'n/a'
 );
 
-INSERT INTO artists (
-    artist_name,
-    artist_city,
-    artist_state,
-    artist_phone,
+INSERT INTO "Artist" (
+    name,
+    city,
+    state,
+    phone,
     image_url,
     facebook_url,
     website,
     seeking_venue,
     seeking_description
-)
+    )
 VALUES (
     'The Wild Sax Band',
     'San Francisco',
@@ -178,84 +178,84 @@ VALUES (
 
 );
 
-CREATE TABLE show (
-    id SERIAL PRIMARY KEY,
-    artist_id INT REFERENCES artists(id), 
-    venue_id INT REFERENCES venues(id),
-    start_time TIMESTAMP
-);
+-- CREATE TABLE "Show" (
+--     id SERIAL PRIMARY KEY,
+--     artist_id INT REFERENCES artists(id), 
+--     venue_id INT REFERENCES venues(id),
+--     start_time TIMESTAMP
+-- );
 
-INSERT INTO show ( artist_id, venue_id, start_time ) 
+INSERT INTO "Show" ( artist_id, venue_id, start_time ) 
 VALUES ( 1, 1, '2019-05-21T21:30:00.000Z' );
 
-INSERT INTO show ( artist_id, venue_id, start_time ) 
+INSERT INTO "Show" ( artist_id, venue_id, start_time ) 
 VALUES ( 2, 3, '2019-06-15T23:00:00.000Z');
 
-INSERT INTO show ( artist_id, venue_id, start_time ) 
+INSERT INTO "Show" ( artist_id, venue_id, start_time ) 
 VALUES ( 2, 3, '2035-04-01T20:00:00.000Z');
 
-INSERT INTO show ( artist_id, venue_id, start_time ) 
+INSERT INTO "Show" ( artist_id, venue_id, start_time ) 
 VALUES ( 2, 3, '2035-04-08T20:00:00.000Z');
 
-INSERT INTO show ( artist_id, venue_id, start_time ) 
+INSERT INTO "Show" ( artist_id, venue_id, start_time ) 
 VALUES ( 2, 3, '2035-04-15T20:00:00.000Z');
 
-CREATE TABLE artist_genre (
-    id SERIAL PRIMARY KEY,
-    artist_id INT REFERENCES artists(id), 
-    genre VARCHAR
-);
+-- CREATE TABLE "Artist_Genre" (
+--     id SERIAL PRIMARY KEY,
+--     artist_id INT REFERENCES artists(id), 
+--     genre VARCHAR
+-- );
 
-INSERT INTO artist_genre (artist_id, genre)
+INSERT INTO "Artist_Genre" (artist_id, genre)
 VALUES(1, 'Rock n Roll');
 
-INSERT INTO artist_genre (artist_id, genre)
+INSERT INTO "Artist_Genre" (artist_id, genre)
 VALUES(2, 'Jazz');
 
-INSERT INTO artist_genre (artist_id, genre)
+INSERT INTO "Artist_Genre" (artist_id, genre)
 VALUES(3, 'Jazz');
 
-INSERT INTO artist_genre (artist_id, genre)
+INSERT INTO "Artist_Genre" (artist_id, genre)
 VALUES(3, 'Classical');
 
-CREATE TABLE venue_genre (
-    id SERIAL PRIMARY KEY,
-    venue_id INT REFERENCES venues(id), 
-    genre VARCHAR
-);
+-- CREATE TABLE "Venue_Genre" (
+--     id SERIAL PRIMARY KEY,
+--     venue_id INT REFERENCES venues(id), 
+--     genre VARCHAR
+-- );
 
-INSERT INTO venue_genre (venue_id, genre)
+INSERT INTO "Venue_Genre" (venue_id, genre)
 VALUES(1, 'Jazz');
 
-INSERT INTO venue_genre (venue_id, genre)
+INSERT INTO "Venue_Genre" (venue_id, genre)
 VALUES(1, 'Reggae');
 
-INSERT INTO venue_genre (venue_id, genre)
+INSERT INTO "Venue_Genre" (venue_id, genre)
 VALUES(1, 'Swing');
 
-INSERT INTO venue_genre (venue_id, genre)
+INSERT INTO "Venue_Genre" (venue_id, genre)
 VALUES(1, 'Classical');
 
-INSERT INTO venue_genre (venue_id, genre)
+INSERT INTO "Venue_Genre" (venue_id, genre)
 VALUES(1, 'Folk');
 
-INSERT INTO venue_genre (venue_id, genre)
+INSERT INTO "Venue_Genre" (venue_id, genre)
 VALUES(2, 'Classical');
 
-INSERT INTO venue_genre (venue_id, genre)
+INSERT INTO "Venue_Genre" (venue_id, genre)
 VALUES(2, 'R&B');
 
-INSERT INTO venue_genre (venue_id, genre)
+INSERT INTO "Venue_Genre" (venue_id, genre)
 VALUES(2, 'Hip-Hop');
 
-INSERT INTO venue_genre (venue_id, genre)
+INSERT INTO "Venue_Genre" (venue_id, genre)
 VALUES(3, 'Rock n Roll');
 
-INSERT INTO venue_genre (venue_id, genre)
+INSERT INTO "Venue_Genre" (venue_id, genre)
 VALUES(3, 'Jazz');
 
-INSERT INTO venue_genre (venue_id, genre)
+INSERT INTO "Venue_Genre" (venue_id, genre)
 VALUES(3, 'Classical');
 
-INSERT INTO venue_genre (venue_id, genre)
+INSERT INTO "Venue_Genre" (venue_id, genre)
 VALUES(3, 'Folk');
