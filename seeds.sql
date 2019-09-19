@@ -3,7 +3,7 @@
 * Just copy and paste into your database client
 */
 
-CREATE TABLE Venue (
+CREATE TABLE venues (
     id SERIAL PRIMARY KEY,
     venue_name VARCHAR,
     venue_city VARCHAR,
@@ -20,7 +20,7 @@ CREATE TABLE Venue (
 
 );
 
-INSERT INTO Venue (
+INSERT INTO venues (
     venue_name,
     venue_city,
     venue_state,
@@ -46,7 +46,7 @@ VALUES (
     'We are on the lookout for a local artist to play every two weeks. Please call us.'
     );
 
-INSERT INTO Venue (
+INSERT INTO venues (
     venue_name,
     venue_city,
     venue_state,
@@ -72,7 +72,7 @@ VALUES (
     'n/a'
     );
 
-INSERT INTO Venue (
+INSERT INTO venues (
     venue_name,
     venue_city,
     venue_state,
@@ -98,7 +98,7 @@ VALUES (
     'n/a'
     );
 
-CREATE TABLE Artist (
+CREATE TABLE artists (
     id SERIAL PRIMARY KEY,
     artist_name VARCHAR,
     artist_city VARCHAR,
@@ -111,7 +111,7 @@ CREATE TABLE Artist (
     seeking_description VARCHAR
 );
 
-INSERT INTO Artist (
+INSERT INTO artists (
     artist_name,
     artist_city,
     artist_state,
@@ -134,7 +134,7 @@ VALUES (
     'Looking for shows to perform at in the San Francisco Bay Area!'
 );
 
-INSERT INTO Artist (
+INSERT INTO artists (
     artist_name,
     artist_city,
     artist_state,
@@ -157,7 +157,7 @@ VALUES (
     'n/a'
 );
 
-INSERT INTO Artist (
+INSERT INTO artists (
     artist_name,
     artist_city,
     artist_state,
@@ -183,8 +183,8 @@ VALUES (
 
 CREATE TABLE show (
     id SERIAL PRIMARY KEY,
-    artist_id INT REFERENCES Artist(id), 
-    venue_id INT REFERENCES Venue(id),
+    artist_id INT REFERENCES artists(id), 
+    venue_id INT REFERENCES venues(id),
     start_time TIMESTAMP
 );
 
@@ -205,7 +205,7 @@ VALUES ( 2, 3, '2035-04-15T20:00:00.000Z');
 
 CREATE TABLE artist_genre (
     id SERIAL PRIMARY KEY,
-    artist_id INT REFERENCES Artist(id), 
+    artist_id INT REFERENCES artists(id), 
     genre VARCHAR
 );
 
@@ -223,7 +223,7 @@ VALUES(3, 'Classical');
 
 CREATE TABLE venue_genre (
     id SERIAL PRIMARY KEY,
-    venue_id INT REFERENCES Venue(id), 
+    venue_id INT REFERENCES venues(id), 
     genre VARCHAR
 );
 
