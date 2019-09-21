@@ -160,19 +160,19 @@ def venues():
       area['city'] = venue.city
       area['state'] = venue.state
       area['venues'] = []
-      new_venue = {}
-      new_venue['id'] = venue.id
-      new_venue['name'] = venue.name
-      new_venue['num_upcoming_shows'] = 3
-      area['venues'].append(new_venue)
+      _venue_ = {}
+      _venue_['id'] = venue.id
+      _venue_['name'] = venue.name
+      _venue_['num_upcoming_shows'] = 3
+      area['venues'].append(_venue_)
       data1.append(area)
     else:
-      new_venue = {}
-      new_venue['id'] = venue.id
-      new_venue['name'] = venue.name
-      new_venue['num_upcoming_shows'] = 3
-      city_index = cities.index(location)
-      data1[city_index]['venues'].append(new_venue)
+      _venue_ = {}
+      _venue_['id'] = venue.id
+      _venue_['name'] = venue.name
+      _venue_['num_upcoming_shows'] = 3
+      _venue_ = cities.index(location)
+      data1[city_index]['venues'].append(_venue_)
 
     #print(data1)
     
@@ -311,17 +311,26 @@ def delete_venue(venue_id):
 @app.route('/artists')
 def artists():
   # TODO: replace with real data returned from querying the database
-  data=[{
-    "id": 4,
-    "name": "Guns N Petals",
-  }, {
-    "id": 5,
-    "name": "Matt Quevedo",
-  }, {
-    "id": 6,
-    "name": "The Wild Sax Band",
-  }]
-  return render_template('pages/artists.html', artists=data)
+  artists = Artist.query.all()
+  data1 = []
+  for artist in artists:
+    _artist_ = {}
+    _artist_['id'] = artist.id
+    _artist_['name'] = artist.name
+    data1.append(_artist_)
+  print(data1)
+
+  # data=[{
+  #   "id": 4,
+  #   "name": "Guns N Petals",
+  # }, {
+  #   "id": 5,
+  #   "name": "Matt Quevedo",
+  # }, {
+  #   "id": 6,
+  #   "name": "The Wild Sax Band",
+  # }]
+  return render_template('pages/artists.html', artists=data1)
 
 @app.route('/artists/search', methods=['POST'])
 def search_artists():
