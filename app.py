@@ -680,7 +680,29 @@ def shows():
     "artist_image_link": "https://images.unsplash.com/photo-1558369981-f9ca78462e61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=794&q=80",
     "start_time": "2035-04-15T20:00:00.000Z"
   }]
-  return render_template('pages/shows.html', shows=data)
+
+
+  _shows_ = Show.query.all()
+
+  shows = []
+
+  for item in _shows_:
+    _artist_ = Artist.query.get(item.artist_id)
+    _venue_ = Venue.query.get(item.venue_id)
+    show = {}
+    show['venue_id'] = item.venue_id
+    show['venue_name'] = _venue_.name
+    show['artist_id'] = item.artist_id
+    show['artist_name'] = _artist_.name
+    show['artist_image_link'] = _artist_.image_url
+    show['start_time'] = item.start_time.strftime('%m/%d/%Y')
+    shows.append(show)
+  print(shows)
+
+
+
+
+  return render_template('pages/shows.html', shows=shows)
 
 @app.route('/shows/create')
 def create_shows():
