@@ -280,7 +280,7 @@ def show_venue(venue__id):
   _genres_ = Venue_Genre.query.filter_by(venue_id = venue__id).all()
   _shows_ = Show.query.filter_by(venue_id = venue__id).all()
   
-  print(_shows_)
+  
   venue = {}
   venue['id'] = _venue_.id
   venue['name'] = _venue_.name
@@ -416,7 +416,7 @@ def show_artist(artist_id):
   # shows the venue page with the given venue_id
   # TODO: replace with real venue data from the venues table, using venue_id
   data1={
-    "id": 4,
+    "id": 1,
     "name": "Guns N Petals",
     "genres": ["Rock n Roll"],
     "city": "San Francisco",
@@ -438,7 +438,7 @@ def show_artist(artist_id):
     "upcoming_shows_count": 0,
   }
   data2={
-    "id": 5,
+    "id": 2,
     "name": "Matt Quevedo",
     "genres": ["Jazz"],
     "city": "New York",
@@ -458,7 +458,7 @@ def show_artist(artist_id):
     "upcoming_shows_count": 0,
   }
   data3={
-    "id": 6,
+    "id": 3,
     "name": "The Wild Sax Band",
     "genres": ["Jazz", "Classical"],
     "city": "San Francisco",
@@ -487,7 +487,79 @@ def show_artist(artist_id):
     "upcoming_shows_count": 3,
   }
   data = list(filter(lambda d: d['id'] == artist_id, [data1, data2, data3]))[0]
-  return render_template('pages/show_artist.html', artist=data)
+
+  
+  _artist_ = Artist.query.get(artist_id)
+  _genres_ = Artist_Genre.query.filter_by(artist_id = artist_id).all()
+  _shows_ = Show.query.filter_by(artist_id = artist_id).all()
+
+
+
+
+  artist = {}
+  artist['id'] = _artist_.id
+  artist['name'] = _artist_.name
+  artist['genres'] = []
+  for item in _genres_:
+    artist['genres'].append(item.genre)
+  #artist['address'] = _artist_.address
+  artist['state'] = _artist_.state
+  artist['city'] = _artist_.city
+  artist['phone'] = _artist_.phone
+  artist['website'] = _artist_.website
+  artist['facebook_link'] = _artist_.facebook_url
+  artist['seeking_venue'] = _artist_.seeking_venue
+  artist['seeking_description'] = _artist_.seeking_description
+  artist['image_link'] = _artist_.image_url
+  artist['past_shows'] = []
+  artist['upcoming_shows'] = []
+  for item in _shows_:
+    now = datetime.utcnow()
+    print(item.venue_id)
+    _venue_ = Venue.query.filter_by(id = item.venue_id).all()[0]
+    show = {}
+    show['venue_id'] = item.venue_id
+    show['start_time'] = item.start_time.strftime('%m/%d/%Y')
+    print(item.start_time)
+    show['venue_name'] = _venue_.name
+    show['venue_image_link'] = _venue_.image_url
+    if item.start_time < now:
+      #print('PAST SHOW')
+      artist['past_shows'].append(show)
+    else:
+      #print('UPCOMING SHOW')
+      artist['upcoming_shows'].append(show)
+    #print(item.start_time)
+    #print(datetime.utcnow())
+
+
+
+  artist['past_shows_count'] = len(artist['past_shows'])
+  artist['upcoming_shows_count'] = len(artist['upcoming_shows'])
+
+  print('ID: {}'.format(artist['id']))
+  print('Name: {}'.format(artist['name']))
+  print('Genres: {}'.format(artist['genres']))
+  #print('Address: {}'.format(artist['address']))
+  print('City: {}'.format(artist['city']))
+  print('State: {}'.format(artist['state']))
+  print('Phone: {}'.format(artist['phone']))
+  print('Website: {}'.format(artist['website']))
+  print('Facebook URL: {}'.format(artist['facebook_link']))
+  print('Seeking Venue: {}'.format(artist['seeking_venue']))
+  print('Image URL: {}'.format(artist['image_link']))
+  print('Past Shows: {}'.format(artist['past_shows']))
+  print('Upcoming Shows: {}'.format(artist['upcoming_shows']))
+  print('Past Shows Count: {}'.format(artist['past_shows_count']))
+  print('Upcoming Shows Count: {}'.format(artist['upcoming_shows_count']))
+
+
+  print(artist)
+
+
+
+
+  return render_template('pages/show_artist.html', artist=artist)
 
 #  Update
 #  ----------------------------------------------------------------
