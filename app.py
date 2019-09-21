@@ -124,28 +124,59 @@ def index():
 def venues():
   # TODO: replace with real venues data.
   #       num_shows should be aggregated based on number of upcoming shows per venue.
-  data=[{
-    "city": "San Francisco",
-    "state": "CA",
-    "venues": [{
-      "id": 1,
-      "name": "The Musical Hop",
-      "num_upcoming_shows": 0,
-    }, {
-      "id": 3,
-      "name": "Park Square Live Music & Coffee",
-      "num_upcoming_shows": 1,
-    }]
-  }, {
-    "city": "New York",
-    "state": "NY",
-    "venues": [{
-      "id": 2,
-      "name": "The Dueling Pianos Bar",
-      "num_upcoming_shows": 0,
-    }]
-  }]
-  return render_template('pages/venues.html', areas=data);
+  venues = Venue.query.all()
+
+  cities = []
+  data1 = []
+
+  # data=[{
+  #   "city": "San Francisco",
+  #   "state": "CA",
+  #   "venues": [{
+  #     "id": 1,
+  #     "name": "The Musical Hop",
+  #     "num_upcoming_shows": 0,
+  #   }, {
+  #     "id": 3,
+  #     "name": "Park Square Live Music & Coffee",
+  #     "num_upcoming_shows": 1,
+  #   }]
+  # }, {
+  #   "city": "New York",
+  #   "state": "NY",
+  #   "venues": [{
+  #     "id": 2,
+  #     "name": "The Dueling Pianos Bar",
+  #     "num_upcoming_shows": 0,
+  #   }]
+  # }]
+
+  for venue in venues:
+    
+    location = (venue.city, venue.state)
+    if location not in cities:
+      cities.append(location)
+      area = {}
+      area['city'] = venue.city
+      area['state'] = venue.state
+      area['venues'] = []
+      new_venue = {}
+      new_venue['id'] = venue.id
+      new_venue['name'] = venue.name
+      new_venue['num_upcoming_shows'] = 3
+      area['venues'].append(new_venue)
+      data1.append(area)
+    else:
+      new_venue = {}
+      new_venue['id'] = venue.id
+      new_venue['name'] = venue.name
+      new_venue['num_upcoming_shows'] = 3
+      city_index = cities.index(location)
+      data1[city_index]['venues'].append(new_venue)
+
+    #print(data1)
+    
+  return render_template('pages/venues.html', areas=data1);
 
 @app.route('/venues/search', methods=['POST'])
 def search_venues():
