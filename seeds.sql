@@ -192,13 +192,13 @@ INSERT INTO "Show" ( artist_id, venue_id, start_time )
 VALUES ( 2, 3, '2019-06-15T23:00:00.000Z');
 
 INSERT INTO "Show" ( artist_id, venue_id, start_time ) 
-VALUES ( 2, 3, '2035-04-01T20:00:00.000Z');
+VALUES ( 3, 3, '2035-04-01T20:00:00.000Z');
 
 INSERT INTO "Show" ( artist_id, venue_id, start_time ) 
-VALUES ( 2, 3, '2035-04-08T20:00:00.000Z');
+VALUES ( 3, 3, '2035-04-08T20:00:00.000Z');
 
 INSERT INTO "Show" ( artist_id, venue_id, start_time ) 
-VALUES ( 2, 3, '2035-04-15T20:00:00.000Z');
+VALUES ( 3, 3, '2035-04-15T20:00:00.000Z');
 
 -- CREATE TABLE "Artist_Genre" (
 --     id SERIAL PRIMARY KEY,
