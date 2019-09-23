@@ -385,14 +385,34 @@ def create_venue_submission():
   # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
   return render_template('pages/home.html')
 
-@app.route('/venues/<venue_id>', methods=['DELETE'])
+@app.route('/venues/<venue_id>/deleteplease', methods=['GET'])
 def delete_venue(venue_id):
   # TODO: Complete this endpoint for taking a venue_id, and using
   # SQLAlchemy ORM to delete a record. Handle cases where the session commit could fail.
+  error=False
+  
+  try:
 
+    venue=Venue.query.get(venue_id)
+    for genre in venue.genre:
+      old_genre = Venue_Genre.query.get(genre.id)
+      db.session.delete(old_genre)
+    db.session.delete(venue)
+    db.session.commit()
+
+  except:
+    error = True
+    db.session.rollback()
+    print(sys.exc_info())
+  finally:
+    db.session.close()
+  if error:
+    flash('Venue could not be deleted!')
+  else:
+    flash('Venue was successfully deleted!')
   # BONUS CHALLENGE: Implement a button to delete a Venue on a Venue Page, have it so that
   # clicking that button delete it from the db then redirect the user to the homepage
-  return None
+  return render_template('pages/home.html')
 
 #  Artists
 #  ----------------------------------------------------------------
@@ -761,6 +781,34 @@ def create_artist_submission():
   # e.g., flash('An error occurred. Artist ' + data.name + ' could not be listed.')
   return render_template('pages/home.html')
 
+
+@app.route('/artists/<artist_id>/deleteplease', methods=['GET'])
+def delete_artist(artist_id):
+  # TODO: Complete this endpoint for taking a venue_id, and using
+  # SQLAlchemy ORM to delete a record. Handle cases where the session commit could fail.
+  error=False
+  try:
+
+    artist=Atrist.query.get(artist_id)
+    # for genre in artist.genre:
+    #   old_genre = Artist_Genre.query.get(genre.id)
+    #   db.session.delete(old_genre)
+    db.session.delete(artist)
+    db.session.commit()
+
+  except:
+    error = True
+    db.session.rollback()
+    print(sys.exc_info())
+  finally:
+    db.session.close()
+  if error:
+    flash('Artist could not be deleted!')
+  else:
+    flash('Artist was successfully deleted!')
+  # BONUS CHALLENGE: Implement a button to delete a Venue on a Venue Page, have it so that
+  # clicking that button delete it from the db then redirect the user to the homepage
+  return render_template('pages/home.html')
 
 #  Shows
 #  ----------------------------------------------------------------
