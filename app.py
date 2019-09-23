@@ -5,7 +5,8 @@
 import json
 import dateutil.parser
 import babel
-from flask import Flask, render_template, request, Response, flash, redirect, url_for
+import sys
+from flask import Flask, render_template, request, Response, flash, redirect, url_for, jsonify
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -40,7 +41,7 @@ class Venue(db.Model):
     state = db.Column(db.String(120))
     address = db.Column(db.String(120))
     phone = db.Column(db.String(120))
-    image_url = db.Column(db.String(500), nullable=False)
+    image_url = db.Column(db.String(500))
     facebook_url = db.Column(db.String(120))
     website = db.Column(db.String(120))
     seeking_talent = db.Column(db.Boolean, nullable=False, default=False)
@@ -128,13 +129,8 @@ def venues():
   # TODO: replace with real venues data.
   #       num_shows should be aggregated based on number of upcoming shows per venue.
   venues = Venue.query.all()
-  venues2 = Venue.query.join(Venue.shows).all()
-  print(venues2[0].shows)
-
-
   cities = []
   data1 = []
-
   # data=[{
   #   "city": "San Francisco",
   #   "state": "CA",
@@ -158,9 +154,7 @@ def venues():
   # }]
 
   for venue in venues:
-    
     location = (venue.city, venue.state)
-
     _venue_ = {}
     _venue_['id'] = venue.id
     _venue_['name'] = venue.name
@@ -169,7 +163,6 @@ def venues():
       if show.start_time > datetime.utcnow():
         upcoming_shows.append(show)
     _venue_['num_upcoming_shows'] = len(upcoming_shows)
-
     if location not in cities:
       cities.append(location)
       area = {}
@@ -179,10 +172,6 @@ def venues():
       area['venues'].append(_venue_)
       data1.append(area)
     else:
-      
-      
-      
-      
       city_index = cities.index(location)
       data1[city_index]['venues'].append(_venue_)
   data2 = []
@@ -190,7 +179,6 @@ def venues():
     sorted_venues = sorted(area['venues'], key=lambda k: k['num_upcoming_shows'], reverse=True)
     area['venues'] = sorted_venues
   sorted_areas = sorted(data1, key=lambda k: k['venues'][0]['num_upcoming_shows'], reverse=True)
-  #print(sorted_areas)
   return render_template('pages/venues.html', areas=data1);
 
 @app.route('/venues/search', methods=['POST'])
@@ -327,30 +315,9 @@ def show_venue(venue__id):
     else:
       #print('UPCOMING SHOW')
       venue['upcoming_shows'].append(show)
-    #print(item.start_time)
-    #print(datetime.utcnow())
-
-
 
   venue['past_shows_count'] = len(venue['past_shows'])
   venue['upcoming_shows_count'] = len(venue['upcoming_shows'])
-
-  print('ID: {}'.format(venue['id']))
-  print('Name: {}'.format(venue['name']))
-  print('Genres: {}'.format(venue['genres']))
-  print('Address: {}'.format(venue['address']))
-  print('City: {}'.format(venue['city']))
-  print('State: {}'.format(venue['state']))
-  print('Phone: {}'.format(venue['phone']))
-  print('Website: {}'.format(venue['website']))
-  print('Facebook URL: {}'.format(venue['facebook_link']))
-  print('Seeking Talent: {}'.format(venue['seeking_talent']))
-  print('Image URL: {}'.format(venue['image_link']))
-  print('Past Shows: {}'.format(venue['past_shows']))
-  print('Upcoming Shows: {}'.format(venue['upcoming_shows']))
-  print('Past Shows Count: {}'.format(venue['past_shows_count']))
-  print('Upcoming Shows Count: {}'.format(venue['upcoming_shows_count']))
-
 
   return render_template('pages/show_venue.html', venue=venue)
 
@@ -366,9 +333,52 @@ def create_venue_form():
 def create_venue_submission():
   # TODO: insert form data as a new Venue record in the db, instead
   # TODO: modify data to be the data object returned from db insertion
+  error = False
+  name=request.form['name']
+  city=request.form['city']
+  state=request.form['state']
+  address=request.form['address']
+  phone=request.form['phone']
+  genres = request.form.getlist('genres')
+  facebook_link = request.form['facebook_link']
+  print(facebook_link)
+
+  try:
+
+    new_venue = Venue(
+      name=name,
+      city=city,
+      state=state,
+      address=address,
+      phone=phone,
+      image_url='#',
+      facebook_url=request.form['facebook_link']
+    )
+    db.session.add(new_venue)
+    db.session.flush()
+
+    for genre in genres:
+      new_venue_genre = Venue_Genre(
+        venue_id=new_venue.id,
+        genre=genre
+      )
+      db.session.add(new_venue_genre)
+
+    db.session.commit()
+  except:
+    error = True
+    db.session.rollback()
+    print(sys.exc_info())
+  finally:
+    db.session.close()
+  if error:
+    flash('Venue ' + request.form['name'] + ' could not be listed!')
+  else:
+    flash('Venue ' + request.form['name'] + ' was successfully listed!')
+
 
   # on successful db insert, flash success
-  flash('Venue ' + request.form['name'] + ' was successfully listed!')
+  
   # TODO: on unsuccessful db insert, flash an error instead.
   # e.g., flash('An error occurred. Venue ' + data.name + ' could not be listed.')
   # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
@@ -538,9 +548,7 @@ def show_artist(artist_id):
     else:
       #print('UPCOMING SHOW')
       artist['upcoming_shows'].append(show)
-    #print(item.start_time)
-    #print(datetime.utcnow())
-
+    
   artist['past_shows_count'] = len(artist['past_shows'])
   artist['upcoming_shows_count'] = len(artist['upcoming_shows'])
 
@@ -613,9 +621,50 @@ def create_artist_submission():
   # called upon submitting the new artist listing form
   # TODO: insert form data as a new Venue record in the db, instead
   # TODO: modify data to be the data object returned from db insertion
+  error = False
+  name=request.form['name']
+  city=request.form['city']
+  state=request.form['state']
+  
+  phone=request.form['phone']
+  genres = request.form.getlist('genres')
+  facebook_link = request.form['facebook_link']
+  print(facebook_link)
+
+  try:
+
+    new_artist = Artist(
+      name=name,
+      city=city,
+      state=state,
+      phone=phone,
+      image_url='#',
+      facebook_url=request.form['facebook_link']
+    )
+    db.session.add(new_artist)
+    db.session.flush()
+
+    for genre in genres:
+      new_artist_genre = Artist_Genre(
+        artist_id=new_artist.id,
+        genre=genre
+      )
+      db.session.add(new_artist_genre)
+
+    db.session.commit()
+  except:
+    error = True
+    db.session.rollback()
+    print(sys.exc_info())
+  finally:
+    db.session.close()
+  if error:
+    flash('Artist ' + request.form['name'] + ' could not be listed!')
+  else:
+    flash('Artist ' + request.form['name'] + ' was successfully listed!')
 
   # on successful db insert, flash success
-  flash('Artist ' + request.form['name'] + ' was successfully listed!')
+  #flash('Artist ' + request.form['name'] + ' was successfully listed!')
   # TODO: on unsuccessful db insert, flash an error instead.
   # e.g., flash('An error occurred. Artist ' + data.name + ' could not be listed.')
   return render_template('pages/home.html')
@@ -700,8 +749,32 @@ def create_show_submission():
   # called to create new shows in the db, upon submitting new show listing form
   # TODO: insert form data as a new Show record in the db, instead
 
+  error = False
+  artist_id=request.form['artist_id']
+  venue_id=request.form['venue_id']
+  start_time=request.form['start_time']
+
+  try:
+
+    new_show = Show(
+      artist_id=artist_id,
+      venue_id=venue_id,
+      start_time=start_time
+    )
+    db.session.add(new_show)
+    db.session.commit()
+  except:
+    error = True
+    db.session.rollback()
+    print(sys.exc_info())
+  finally:
+    db.session.close()
+  if error:
+    flash('Show '  + ' could not be listed!')
+  else:
+    flash('Show ' + ' was successfully listed!')
   # on successful db insert, flash success
-  flash('Show was successfully listed!')
+  #flash('Show was successfully listed!')
   # TODO: on unsuccessful db insert, flash an error instead.
   # e.g., flash('An error occurred. Show could not be listed.')
   # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
