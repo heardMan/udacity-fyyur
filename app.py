@@ -111,13 +111,15 @@ app.jinja_env.filters['datetime'] = format_datetime
 # Controllers.
 #----------------------------------------------------------------------------#
 
+
+#  Index
+#  ----------------------------------------------------------------
 @app.route('/')
 def index():
   return render_template('pages/home.html')
 
-#  Venues
+#  Venues - Read All
 #  ----------------------------------------------------------------
-
 @app.route('/venues')
 def venues():
   
@@ -153,13 +155,13 @@ def venues():
   sorted_areas = sorted(data1, key=lambda k: k['venues'][0]['num_upcoming_shows'], reverse=True)
   return render_template('pages/venues.html', areas=data1);
 
+#  Venues - Search Route
+#  ----------------------------------------------------------------
 @app.route('/venues/search', methods=['POST'])
 def search_venues():
-  
   search_term = request.form.get('search_term', '')
   print(search_term)
   query_results = Venue.query.filter(Venue.name.ilike('%{}%'.format(search_term))).all()
-  
   response={
     "count": len(query_results),
     "data": query_results
@@ -167,6 +169,8 @@ def search_venues():
   print(response["data"])
   return render_template('pages/search_venues.html', results=response, search_term=request.form.get('search_term', ''))
 
+#  Venues - Read One
+#  ----------------------------------------------------------------
 @app.route('/venues/<int:venue_id>')
 def show_venue(venue_id):
 
@@ -177,8 +181,10 @@ def show_venue(venue_id):
   venue['id'] = _venue_.id
   venue['name'] = _venue_.name
   venue['genres'] = []
+
   for genre in _venue_.genre:
     venue['genres'].append(genre.genre)
+
   venue['address'] = _venue_.address
   venue['state'] = _venue_.state
   venue['city'] = _venue_.city
@@ -190,6 +196,7 @@ def show_venue(venue_id):
   venue['image_link'] = _venue_.image_url
   venue['past_shows'] = []
   venue['upcoming_shows'] = []
+
   for item in _venue_.shows:
     now = datetime.utcnow()
     print(item.artist_id)
@@ -209,29 +216,29 @@ def show_venue(venue_id):
 
   venue['past_shows_count'] = len(venue['past_shows'])
   venue['upcoming_shows_count'] = len(venue['upcoming_shows'])
-
   return render_template('pages/show_venue.html', venue=venue)
 
-#  Create Venue
+#  Venues - Create One - Render Form
 #  ----------------------------------------------------------------
-
 @app.route('/venues/create', methods=['GET'])
 def create_venue_form():
   form = VenueForm()
   return render_template('forms/new_venue.html', form=form)
 
+#  Venues - Create One
+#  ----------------------------------------------------------------
 @app.route('/venues/create', methods=['POST'])
 def create_venue_submission():
   
   error = False
-  name=request.form['name']
-  city=request.form['city']
-  state=request.form['state']
-  address=request.form['address']
-  phone=request.form['phone']
+  name=request.form.get('name', '')
+  city=request.form.get('city', '')
+  state=request.form.get('state', '')
+  address=request.form.get('address', '')
+  phone=request.form.get('phone', '')
   genres = request.form.getlist('genres')
-  facebook_link = request.form['facebook_link']
-  print(facebook_link)
+  facebook_link = request.form.get('facebook_link', '')
+  print(facebook_link2)
 
   try:
 
@@ -242,7 +249,7 @@ def create_venue_submission():
       address=address,
       phone=phone,
       image_url='#',
-      facebook_url=request.form['facebook_link']
+      facebook_url=facebook_link
     )
     db.session.add(new_venue)
     db.session.flush()
@@ -269,6 +276,8 @@ def create_venue_submission():
   # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
   return render_template('pages/home.html')
 
+#  Venues - Delete One
+#  ----------------------------------------------------------------
 @app.route('/venues/<venue_id>/deleteplease', methods=['GET'])
 def delete_venue(venue_id):
   
@@ -297,7 +306,7 @@ def delete_venue(venue_id):
   # clicking that button delete it from the db then redirect the user to the homepage
   return render_template('pages/home.html')
 
-#  Artists
+#  Artists - Read All
 #  ----------------------------------------------------------------
 @app.route('/artists')
 def artists():
@@ -310,9 +319,10 @@ def artists():
     _artist_['name'] = artist.name
     data1.append(_artist_)
   print(data1)
-
   return render_template('pages/artists.html', artists=data1)
 
+#  Artist - Search Route
+#  ----------------------------------------------------------------
 @app.route('/artists/search', methods=['POST'])
 def search_artists():
   
@@ -325,6 +335,8 @@ def search_artists():
   }
   return render_template('pages/search_artists.html', results=response, search_term=request.form.get('search_term', ''))
 
+#  Artists - Read One
+#  ----------------------------------------------------------------
 @app.route('/artists/<int:artist_id>')
 def show_artist(artist_id):
 
@@ -362,47 +374,46 @@ def show_artist(artist_id):
       artist['past_shows'].append(show)
     else:
       artist['upcoming_shows'].append(show)
-    
   artist['past_shows_count'] = len(artist['past_shows'])
   artist['upcoming_shows_count'] = len(artist['upcoming_shows'])
-
   return render_template('pages/show_artist.html', artist=artist)
 
-#  Update
+#  Artists - Update One - Render Form
 #  ----------------------------------------------------------------
 @app.route('/artists/<int:artist_id>/edit', methods=['GET'])
 def edit_artist(artist_id):
   form = ArtistForm()
   artist = Artist.query.get(artist_id)
-  
   return render_template('forms/edit_artist.html', form=form, artist=artist)
 
+#  Artists - Update One 
+#  ----------------------------------------------------------------
 @app.route('/artists/<int:artist_id>/edit', methods=['POST'])
 def edit_artist_submission(artist_id):
   
   error = False
-
-  name=request.form['name']
-  city=request.form['city']
-  state=request.form['state']
-  phone=request.form['phone']
-  genres = request.form.getlist('genres')
-  facebook_link = request.form['facebook_link']
-  print(facebook_link)
+  name=request.form.get('name', '')
+  city=request.form.get('city', '')
+  state=request.form.get('state', '')
+  phone=request.form.get('phone', '')
+  genres = request.form.getlist('genres', '')
+  facebook_link = request.form.get('facebook_link', '')
 
   try:
 
     artist = Artist.query.get(artist_id)
-    
     old_genres = artist.genre
+
     for genre in old_genres:
      old_genre = Artist_Genre.query.get(genre.id)   
      db.session.delete(old_genre)
+
     artist.name=name
     artist.city=city
     artist.state=state
     artist.phone=phone
     artist.facebook_url = facebook_link
+
     for genre in genres:
       new_genre = Artist_Genre(
         artist_id=artist_id,
@@ -418,43 +429,41 @@ def edit_artist_submission(artist_id):
   finally:
     db.session.close()
   if error:
-    flash('Artist ' + request.form['name'] + ' could not be updated!')
+    flash('Artist ' + request.form.get('name') + ' could not be updated!')
   else:
-    flash('Artist ' + request.form['name'] + ' was successfully updated!')
-
+    flash('Artist ' + request.form.get('name') + ' was successfully updated!')
   return redirect(url_for('show_artist', artist_id=artist_id))
 
+#  Venues - Update One - Render Form
+#  ----------------------------------------------------------------
 @app.route('/venues/<int:venue_id>/edit', methods=['GET'])
 def edit_venue(venue_id):
   form = VenueForm()
   venue = Venue.query.get(venue_id)
- 
   return render_template('forms/edit_venue.html', form=form, venue=venue)
 
+#  Venues - Update One
+#  ----------------------------------------------------------------
 @app.route('/venues/<int:venue_id>/edit', methods=['POST'])
 def edit_venue_submission(venue_id):
  
   error = False
-
-  name=request.form['name']
-  address=request.form['address']
-  city=request.form['city']
-  state=request.form['state']
-  phone=request.form['phone']
+  name=request.form.get('name', '')
+  address=request.form.get('address', '')
+  city=request.form.get('city', '')
+  state=request.form.get('state', '')
+  phone=request.form.get('phone', '')
   genres = request.form.getlist('genres')
-  facebook_link = request.form['facebook_link']
-  print(facebook_link)
+  facebook_link = request.form.get('facebook_link')
 
   try:
 
     venue = Venue.query.get(venue_id)
-    
     old_genres = venue.genre
+
     for genre in old_genres:
-     old_genre = Venue_Genre.query.get(genre.id)
-     
+     old_genre = Venue_Genre.query.get(genre.id) 
      db.session.delete(old_genre)
-    
     
     venue.name=name
     venue.address=address
@@ -462,6 +471,7 @@ def edit_venue_submission(venue_id):
     venue.state=state
     venue.phone=phone
     venue.facebook_url = facebook_link
+
     for genre in genres:
       new_genre = Venue_Genre(
         venue_id=venue_id,
@@ -477,31 +487,30 @@ def edit_venue_submission(venue_id):
   finally:
     db.session.close()
   if error:
-    flash('Venue ' + request.form['name'] + ' could not be updated!')
+    flash('Venue ' + request.form.get('name', '') + ' could not be updated!')
   else:
-    flash('Venue ' + request.form['name'] + ' was successfully updated!')
+    flash('Venue ' + request.form.get('name', '') + ' was successfully updated!')
   return redirect(url_for('show_venue', venue_id=venue_id))
 
-#  Create Artist
+#  Artists - Create One - Render Form
 #  ----------------------------------------------------------------
-
 @app.route('/artists/create', methods=['GET'])
 def create_artist_form():
   form = ArtistForm()
   return render_template('forms/new_artist.html', form=form)
 
+#  Artist - Create One
+#  ----------------------------------------------------------------
 @app.route('/artists/create', methods=['POST'])
 def create_artist_submission():
   
   error = False
-  name=request.form['name']
-  city=request.form['city']
-  state=request.form['state']
-  
-  phone=request.form['phone']
+  name=request.form.get('name', '')
+  city=request.form.get('city', '')
+  state=request.form.get('state', '')
+  phone=request.form.get('phone', '')
   genres = request.form.getlist('genres')
-  facebook_link = request.form['facebook_link']
-  print(facebook_link)
+  facebook_link = request.form.get('facebook_link', '')
 
   try:
 
@@ -531,13 +540,14 @@ def create_artist_submission():
   finally:
     db.session.close()
   if error:
-    flash('Artist ' + request.form['name'] + ' could not be listed!')
+    flash('Artist ' + request.form.get('name', '') + ' could not be listed!')
   else:
-    flash('Artist ' + request.form['name'] + ' was successfully listed!')
+    flash('Artist ' + request.form.get('name', '') + ' was successfully listed!')
 
   return render_template('pages/home.html')
 
-
+#  Artist - Delete One
+#  ----------------------------------------------------------------
 @app.route('/artists/<artist_id>/deleteplease', methods=['GET'])
 def delete_artist(artist_id):
  
@@ -545,7 +555,6 @@ def delete_artist(artist_id):
   try:
 
     artist=Atrist.query.get(artist_id)
-   
     db.session.delete(artist)
     db.session.commit()
 
@@ -563,14 +572,12 @@ def delete_artist(artist_id):
   # clicking that button delete it from the db then redirect the user to the homepage
   return render_template('pages/home.html')
 
-#  Shows
+#  Shows - Read All
 #  ----------------------------------------------------------------
-
 @app.route('/shows')
 def shows():
  
   _shows_ = Show.query.all()
-
   shows = []
 
   for item in _shows_:
@@ -584,24 +591,25 @@ def shows():
     show['artist_image_link'] = _artist_.image_url
     show['start_time'] = item.start_time.strftime('%m/%d/%Y')
     shows.append(show)
-  
-
   return render_template('pages/shows.html', shows=shows)
 
+#  Shows - Create One - Render Form
+#  ----------------------------------------------------------------
 @app.route('/shows/create')
 def create_shows():
   # renders form. do not touch.
   form = ShowForm()
   return render_template('forms/new_show.html', form=form)
 
+#  Shows - Create One
+#  ----------------------------------------------------------------
 @app.route('/shows/create', methods=['POST'])
 def create_show_submission():
 
-
   error = False
-  artist_id=request.form['artist_id']
-  venue_id=request.form['venue_id']
-  start_time=request.form['start_time']
+  artist_id=request.form.get('artist_id')
+  venue_id=request.form.get('venue_id')
+  start_time=request.form.get('start_time')
 
   try:
 
@@ -619,16 +627,19 @@ def create_show_submission():
   finally:
     db.session.close()
   if error:
-    flash('Show '  + ' could not be listed!')
+    flash('Show could not be listed!')
   else:
-    flash('Show ' + ' was successfully listed!')
- 
+    flash('Show was successfully listed!')
   return render_template('pages/home.html')
 
+#  404 Error
+#  ----------------------------------------------------------------
 @app.errorhandler(404)
 def not_found_error(error):
     return render_template('errors/404.html'), 404
 
+#  500 Error
+#  ----------------------------------------------------------------
 @app.errorhandler(500)
 def server_error(error):
     return render_template('errors/500.html'), 500
