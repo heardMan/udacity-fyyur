@@ -69,12 +69,10 @@ def venues():
       'name': result.name
     }
     #create upcoming show list
-    upcoming_shows = []
+    upcoming_shows = [
+      show for show in result.shows if show.start_time > datetime.utcnow()
+      ]
     
-    for show in result.shows:
-      #sort shows by utc timestamp
-      if show.start_time > datetime.utcnow():
-        upcoming_shows.append(show)
     #create and set venue upcoming shows
     venue['num_upcoming_shows'] = len(upcoming_shows)
     
@@ -96,9 +94,8 @@ def venues():
 
   #sort each venue with in each area based on the number of shows
   for area in data:
-    sorted_venues = sorted(area['venues'], key=lambda k: k['num_upcoming_shows'], reverse=True)
-    area['venues'] = sorted_venues
-  # sort each area by the area with the top venue with the most shows
+    area['venues'] = sorted(area['venues'], key=lambda k: k['num_upcoming_shows'], reverse=True)
+  # sort all the areas by the area with the top venue with the most shows
   sorted_areas = sorted(data, key=lambda k: k['venues'][0]['num_upcoming_shows'], reverse=True)
   return render_template('pages/venues.html', areas=data)
 
@@ -126,28 +123,7 @@ def show_venue(venue_id):
 
   #get venue data
   query_result = Venue.query.get(venue_id)
-  
-  #convert query from class to dict for manipulation
-  venue = {
-    'id': query_result.id,
-    'name': query_result.name,
-    'genres': [],
-    'address': query_result.address,
-    'state': query_result.state,
-    'city': query_result.city,
-    'phone': query_result.phone,
-    'website': query_result.website,
-    'facebook_link': query_result.facebook_url,
-    'seeking_talent': query_result.seeking_talent,
-    'seeking_description': query_result.seeking_description,
-    'image_link': query_result.image_url,
-    'past_shows':  [],
-    'upcoming_shows': []
-  }
-  #create genres list
-  for genre in query_result.genre:
-    venue['genres'].append(genre.genre)
-  #create shows list
+  shows = []
   for item in query_result.shows:
     now = datetime.utcnow()
     #get artist info
@@ -166,6 +142,29 @@ def show_venue(venue_id):
     else:
       #add to upcoming shows if data was after now
       venue['upcoming_shows'].append(show)
+  
+  #convert query from class to dict for manipulation
+  venue = {
+    'id': query_result.id,
+    'name': query_result.name,
+    'genres': [
+      genre.genre for genre in query_result.genre
+      ],
+    'address': query_result.address,
+    'state': query_result.state,
+    'city': query_result.city,
+    'phone': query_result.phone,
+    'website': query_result.website,
+    'facebook_link': query_result.facebook_url,
+    'seeking_talent': query_result.seeking_talent,
+    'seeking_description': query_result.seeking_description,
+    'image_link': query_result.image_url,
+    'past_shows':  [],
+    'upcoming_shows': []
+  }
+  
+  #create shows list
+  
   #create and define past shows count property
   venue['past_shows_count'] = len(venue['past_shows'])
   #create and define upcoming shows count property
